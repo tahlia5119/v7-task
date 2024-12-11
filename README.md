@@ -11,3 +11,10 @@ started off with a `generate_grid` function that accepts a parameter of grid siz
 ~~Add an `update_grid` function that accepts an integer corresponding to an action. At this point, I figured that the grid could be a class object that can update itself with these functions~~
 
 Keeping the actions as their own standalone functions. For the up/down actions, I've used the numpy matrix `transpose` function on the original grid so needed to use `deepcopy` for this purpose. I'll probably want to look at optimising this as it doesn't seem like this is the most efficient method.
+
+Next steps?
+- add new random tile after an action - bring back `update_grid` function?
+    - include check for a full grid
+- abiltity to add obstacles (max 4) --> this will require refactoring this actions (they need to be deduplicated anyway
+- add actual unit tests)
+
