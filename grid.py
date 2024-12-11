@@ -30,6 +30,7 @@ class Grid:
             updated_row.extend(reversed(final_values))  # using reversed as we are swiping right
             # update the grid object
             self.grid[row_num] = updated_row
+        self.add_tile
 
     def swipe_left(self):
         # loop through the rows
@@ -52,6 +53,7 @@ class Grid:
             final_values.extend(updated_row)
             # update the grid object
             self.grid[row_num] = final_values
+        self.add_tile()
 
     def swipe_up(self):
         #TODO: is there a more efficient way than doing a deepcopy and two transposes?
@@ -79,6 +81,7 @@ class Grid:
             grid_t[row_num] = final_values
         # transpose it back
         self.grid = grid_t.transpose()
+        self.add_tile()
 
     def swipe_down(self):
         #TODO: is there a more efficient way than doing a deepcopy and two transposes?
@@ -101,11 +104,29 @@ class Grid:
 
             # prepend zeros to get original length
             updated_row = [0] * (len(row) - len(final_values))
-            updated_row.extend(final_values) # using reversed as we are swiping right
+            updated_row.extend(reversed(final_values)) # using reversed as we are swiping right
             # update the grid object
             grid_t[row_num] = updated_row
         # transpose it back
         self.grid = grid_t.transpose()
+        # TODO: deduplicate this?
+        self.add_tile()
 
+    def add_tile(self):
+        # check for number of empty tiles and get locations
+        empty_tiles = []
+        for row_num, row in enumerate(self.grid):
+            for col_num, col in enumerate(row):
+                if col == 0:
+                    empty_tiles.append([row_num, col_num])
+        # if there's only 1 space before we add the new tile then it's game over
+        # TODO: raise custom error if this happens
+        if len(empty_tiles) <= 1:
+            print("GAME OVER")
+            return
+        
+        # get a random index to choose which empty tile gets the new 2
+        new_loc = empty_tiles[random.randint(0, len(empty_tiles)-1)]
+        self.grid[new_loc[0]][new_loc[1]] = 2
 
         

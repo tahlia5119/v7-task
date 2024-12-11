@@ -16,9 +16,16 @@ temp_grid[2][5] = 64
 
 temp_grid[5][0] = 2
 temp_grid[5][2] = 2
-temp_grid[5][5] =4
+temp_grid[5][5] = 4
 
 print(temp_grid)
 grid.grid = temp_grid
-grid.swipe_down()
+for i in range(261):
+    grid.swipe_down()
 print(grid.grid)
+
+# game over test
+full_grid = np.matrix([i for i in range(6)] for j in range(6))
+full_grid[0][0] = 0
+grid.grid = full_grid
+grid.swipe_down()
