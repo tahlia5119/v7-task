@@ -1,56 +1,80 @@
-# V7 Take Home Task
+# V7 Take Home Task: 2048 Game
 
-This is a work in progress for a job application take home task. This readme will be significantly improved as I work on this task.
+## Specifications
 
-grid=6x6
-use vue for frontend
+### Main Requirements
+- The grid consists of 6x6 tiles
+- At the beginning of a game the grid is empty, except for one tile of value 2 placed at random.
+- The user can slide the tiles either up, down, left or right
+- After each slide a new tile with value 1 will appear in a random free space.
+- If there is no free space to put the new tile the game is lost
+- During the slide, tiles of equal values pushed into each other will merge into a new tile with the combined value. 2 + 2 = 4
+    - If there are 3 values next to each other, e.g. 2 2 2, and the player slides right, the values closest to the wall should merge first resulting in 2 4.
+- If any tile reaches the value 2048 the game is won.
 
-## Process
-started off with a `generate_grid` function that accepts a parameter of grid size (might as well take the bonus task into consideration now) and generates a matrix of 0 values and a 2 randomly places.
 
-~~Add an `update_grid` function that accepts an integer corresponding to an action. At this point, I figured that the grid could be a class object that can update itself with these functions~~
+### Bonus Tasks
+- Add randomly places obstacles into the grid :white_check_mark:
+    -   the user should be able to choose the number of obstacles at the start of the game 
+    - An obstacle acts as a wall and will not move
+- Custom grid sizes :white_check_mark:
+- A backend with support for multiplayer via websockets :negative_squared_cross_mark:
 
-Keeping the actions as their own standalone functions. For the up/down actions, I've used the numpy matrix `transpose` function on the original grid so needed to use `deepcopy` for this purpose. I'll probably want to look at optimising this as it doesn't seem like this is the most efficient method.
+## Deploying and Playing
 
-Next steps?
-- add new random tile after an action - bring back `update_grid` function?
-    - include check for a full grid
-- abiltity to add obstacles (max 4) --> this will require refactoring this actions (they need to be deduplicated anyway
-- add actual unit tests
+The app can be run (provided you have Docker) with the following command:
 
-Decided to use fastapi to expose the python backend to the frontend. I intend to set it up as a REST API wherein the grid state is sent to the backend with an action and a response is returned that includes game state (game over vs not game over) and the updated grid. If I have time, I can try the multiplayer bonus task with a websocket.
+```bash
+docker compose up frontend-app backend-app
+```
 
-Given I'm using fastapi and the way the data is sent, I'm going to change from using a grid class to just basic functions. Might be useful for websockets though so I'll keep the file for now. I'll use the new `backend/grid.py` file to refine the functions.
+This will build and deploy both backend and frontend containers. The game can then be acessed in the browser via http://localhost:8080.
 
-Assuming minimum grid size is 3.
+You can use the `W`, `A`, `S` and `D` keys to select which direction to slide the tiles. There are also two inputs wherein you can select grid size and obstacle number.
 
-I'm including logic for the blocks now as that will be easier to implement as I go rather than later. I'm making an assumption that we can't have more than grid_size-2 blocks. ~~Maybe I should change this to a solid 4 blocks?~~ And that blocks cannot occur more than once in a row.
+## Solution
 
-After some thinking, I really only need to define the push_left function and then the others can just use that combined wtih transpose/reverse operations.
-left - left
-right - reverse, left, reverse
-up - transpose, left, transpose
-down - transpose, right, transpose
+### Backend
+
+I started off with the backend as that is where I am most familiar. I've chosen to use FastAPI library for a quick server deployment. I've focused on simply having an endpoint to which the frontend can make requests with the current state of the grid, game state, and the action the user wants to perform on the grid. If I were to develop this further to account for the multiplayer websocket bonus task, it should be quite easy to implement through FastAPI.
+
+Regarding the functionality, I've kept it simple with using a small collection of functions that perform operations on the grid provided by the frontend depending on what key the user presses.
+
+I was able to refine the main `push` functions but having the main logic in the `push_left` function and then using the following rules for the others:
+- right - reverse the rows in the grid, call `push_left`, reverse back the rows in the grid
+- up - transpose the grid, call `push_left`, transpose the grid back
+- down - transpose the grid, call `push_right`, transpose the grid back
+
+Other functions include adding a random `2` tile, adding obstacles, checking if any possible moves remain should there be no other space to add a tile, and creating a new grid based on the requested size. All of these can be found in `backend/grid.py`.
+
+The base model used for the game endpoint has the following attributes:
+
+| Attribute | Type  | Default| Description                               | Options                                   |
+|-----------|-------|---------|------------------------------------------|-------------------------------------------|
+| size      | int   | 6       | The length and width of the grid eg. 6x6 | `3 <= size <= 10`                         |
+| blocks    | int   | 0       | Number of obstacles to add to the grid.  | `0 <= blocks <= size-2`                   |
+| grid      | array | None    | `size`x`size` array of grid values       | N/A                                       |
+| state     | str   | running | State of the game                        | `running`, `game_over`, `game_won`        |
+| action    | str   |         | Action the player is taking              | `new_game`, `left`, `right`, `up`, `down` |
 
 ### Frontend
 
-I am not familiar with Vue but will give it a go.
+Given frontend is not my strong suit, I figured using Vue as V7 does would be more beneficial for me to learn. I've gone for VERY basic graphics to display the grid depending on the passed `size` and `blocks` parameters to the backend. Above the grid, there is a button `Reset Defaults` so that a user can quickly reset the `size` and `blocks` inputs to their defaults. The `Generate New Grid` button creates a new grid based on what's been input into `Number of Obstacles` and `Grid Size`.
 
-My idea is to have two pages - the `Home` page and the `Game` page. If there is a game over, an overlay is visible on the game page that says `Game Over` and shows a `New Game?` button that refreshes the page with a new grid.
+To continue with the approach of simplicity, if an error occurs, the user inputs an invalid value, or the game is over, and alert appears to indicate so. For when the game is won, text indicates as such below the grid (see included images below). 
 
-~~When `Game` page is accessed, there is a pop up (or just an overlay?) with optional settings (size and blocks) prefilled with default values (6 and 0 respectively) and another button `Start Game` that removes overlay and sets up the new grid.~~ ~~Add the input to the home page.~~ Just start the game with the default and add the inputs to the left of the grid.
+Obstacles are indicated by black squares.
 
-I should display instructions to the left of the grid.
+I chose the colour pink because it's a nice colour and different from the original game :)
 
-Found a bug while testing the frontend wherein, even if there is still the ability to swipe and add, it shows game over because there's only 1 space left - need to fix this.
+## Future Improvements
 
-And another bug - showing that they won when 2048 isn't present in the grid...
+If time allowed, these are imrovements I would like to have made (and will possibly make once I've submitted this work):
+- Bonus task: implement the websocket endpoint for multiplayer games
+- UNIT TESTS
+- Data persistence
+    - I think it could be interesting to allow a user to return to an existing incomplete game
+    - top scores
+- a much more aesthetic frontend
 
-
-
-## Future improvements:
-- data persistence 
-    - allow user login so that they can return to their old game
-- TESTS (I was pushing how long I was working on this) - I'll probably just add them still after I have submitted for the sake of my github's state
-- bonus task - multiplayer through websockets (can easily be done with fastapi)
-
+Side note - everything in the `misc` folder is just what I created at the very start but thought could come in handy later. Nothing of interest there for the purpose of this take home coding task although I wrote notes throughout this process into NOTES.md which are messy but helped me track my thoughts and ideas.

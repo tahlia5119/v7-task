@@ -1,8 +1,8 @@
 <template>
   <div class="game">
-    <button @click="resetGame" class="button">Reset to Defaults?</button>
+    <button @click="resetGame" class="button">Reset Defaults</button>
     <div class="input">
-      <label for="numberOfBlocks">Number of blocks:</label>
+      <label for="numberOfBlocks">Number of Obstacles:</label>
       <input v-model="blocksInput" type="number" id="numberOfBlocks" />
     </div>
     <div class="input">
@@ -10,6 +10,16 @@
       <input v-model="gridSizeInput" type="number" id="gridSize" />
     </div>
     <button @click="updateGrid" class="button">Generate New Grid</button>
+    <div class="instructions">
+      <span>To move the tiles, use the following keys:</span>
+      <ul>
+        <li>W to slide UP</li>
+        <li>A to slide LEFT</li>
+        <li>S to slide DOWN</li>
+        <li>D to slide RIGHT</li>
+      </ul>
+      <span>The game is won when you reach 2048 (but you can keep going after that!)</span>
+    </div>
     <div class="grid">
       <GameGrid :grid="currentGrid"></GameGrid>
     </div>
@@ -128,23 +138,34 @@ export default {
   height: 100vh;
   align-items: center;
 }
+
+.instructions {
+  padding: 20px 0 0 0;
+  font-size: 15px;
+}
+
 .input {
   margin: 5px 0;
   display: flex;
   align-items: center;
 }
+
 .button {
   width: 200px;
+  font-size: 15px;
+  margin: 10px 0;
 }
 
 .input label {
   text-align: left;
-  width: 130px;
+  width: 140px;
+  font-size: 15px;
 }
 
 .input input {
   width: 100px;
   text-align: center;
+  font-size: 15px;
 }
 
 .grid {
