@@ -3,11 +3,26 @@ from pydantic import BaseModel
 
 import numpy as np
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from backend.grid import new_grid, push_left, push_right, push_up, push_down, add_tile
 from backend.custom_exceptions import GameOver, InvalidGameParameters
 
+
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Game(BaseModel):
     # parameters required to initialise new game otherwise can be none
