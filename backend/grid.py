@@ -1,6 +1,9 @@
 import numpy as np
 import random
 
+from backend.custom_exceptions import GameOver, InvalidGameParameters
+
+
 def push_right(grid: np.ndarray) -> np.ndarray:
     # reverse order of values in each row
     rev_grid = np.flip(grid, 1)
@@ -74,10 +77,8 @@ def add_tile(grid: np.ndarray) -> np.ndarray:
             if col == 0:
                 empty_tiles.append([row_num, col_num])
     # if there's only 1 space before we add the new tile then it's game over
-    # TODO: raise custom error if this happens
     if len(empty_tiles) <= 1:
-        print("GAME OVER")
-        return
+        raise GameOver("GAME OVER.")
     
     # get a random index to choose which empty tile gets the new 2
     new_loc = empty_tiles[random.randint(0, len(empty_tiles)-1)]
@@ -100,14 +101,16 @@ def add_blocks(grid: np.ndarray, blocks: int = 0) -> np.ndarray:
     return grid
 
 def new_grid(size: int = 6, blocks: int = 0) -> np.ndarray:
-    # TODO: add checks here for size limits and block limits and raise custom error (or add to unit function for blocks?)
+    # TODO: set these in a .env?
+    if size < 3 or size > 10:
+        raise InvalidGameParameters(f"Invalid grid size {size}. Must be between 3 and 10 (inclusive).")
     # create zeros matrix
     grid = np.zeros((size, size))
     # add blocks if required - maximum size-2 to avoid completely blocking sections of the grid
     if 0 <= blocks <= size-2:
         grid = add_blocks(grid, blocks)
     else:
-        # TODO: raise exception
-        pass 
+        raise InvalidGameParameters(f"Invalid number of blocks {blocks} for grid size of {size}")
+ 
     # add random 2 tile and return
     return add_tile(grid)
