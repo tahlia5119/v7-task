@@ -6,7 +6,7 @@ import GamePage from "./components/GamePage.vue"
 
 const routes = [
     { path: "/", component: HomePage },
-    { path: "/game", component: GamePage },
+    { path: "/game", component: GamePage, props: (route) => ({ gridSize: parseInt(route.query.gridSize) || 6, blocks: parseInt(route.query.blocks) || 0 }) },
 ];
 
 const router = createRouter({

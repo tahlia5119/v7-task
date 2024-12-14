@@ -38,7 +38,10 @@ I am not familiar with Vue but will give it a go.
 
 My idea is to have two pages - the `Home` page and the `Game` page. If there is a game over, an overlay is visible on the game page that says `Game Over` and shows a `New Game?` button that refreshes the page with a new grid.
 
-When `Game` page is accessed, there is a pop up (or just an overlay?) with optional settings (size and blocks) prefilled with default values (6 and 0 respectively) and another button `Start Game` that removes overlay and sets up the new grid. I should display instructions to the left of the grid.
+~~When `Game` page is accessed, there is a pop up (or just an overlay?) with optional settings (size and blocks) prefilled with default values (6 and 0 respectively) and another button `Start Game` that removes overlay and sets up the new grid.~~ ~~Add the input to the home page.~~ Just start the game with the default and add the inputs to the left of the grid.
+
+I should display instructions to the left of the grid.
+
 
 ## Future improvements:
 - data persistence 
