@@ -42,6 +42,10 @@ My idea is to have two pages - the `Home` page and the `Game` page. If there is 
 
 I should display instructions to the left of the grid.
 
+Found a bug while testing the frontend wherein, even if there is still the ability to swipe and add, it shows game over because there's only 1 space left - need to fix this.
+
+And another bug - showing that they won when 2048 isn't present in the grid...
+
 
 ## Future improvements:
 - data persistence 

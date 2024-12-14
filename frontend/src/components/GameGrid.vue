@@ -21,7 +21,6 @@
         props: {
             grid: {
                 type: Array,
-                required: true,
             },
         },
     }
@@ -31,10 +30,8 @@
     .game-grid {
       display: flex;
       flex-direction: column;
-      border-style: solid;
-      border-width: 2px;
-      border-radius: 10px;
-      padding: 2px;
+      padding: 2px 0px;
+      align-items: center;
     }
 
     .grid-row {
