@@ -69,8 +69,14 @@ def push_up(grid: np.ndarray) -> np.ndarray:
     up = left.transpose()
     return up
 
-def check_moves_left(grid: np.ndarray):
-    if np.all([grid, push_left(grid), push_right(grid), push_up(grid), push_down(grid)]):
+def any_moves_left(grid: np.ndarray):
+    arrays = [grid, push_left(grid), push_right(grid), push_up(grid), push_down(grid)]
+    for arr in arrays:
+        print(arr)
+
+    are_all_equal = all(np.array_equal(arrays[0], arr) for arr in arrays)
+
+    if are_all_equal:
         return False
     return True
 
@@ -93,7 +99,7 @@ def add_tile(grid: np.ndarray) -> np.ndarray:
 
     # check that there are still possible moves after we add a 2-tile
     if len(empty_tiles) <= 1:
-        if not check_moves_left(grid):
+        if not any_moves_left(grid):
             raise GameOver("GAME OVER.")
 
     return grid

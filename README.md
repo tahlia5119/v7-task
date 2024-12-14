@@ -76,5 +76,7 @@ If time allowed, these are imrovements I would like to have made (and will possi
     - I think it could be interesting to allow a user to return to an existing incomplete game
     - top scores
 - a much more aesthetic frontend
+- don't accept a key event if it will not trigger a change
+    - this one is a bit tricky but I noticed it when, even though I have a full grid that will collapse with one move such as move left, if I press the `w` key for up and nothing moves then it's considered a game over, even though the user could have technically made more free space by going left.
 
 Side note - everything in the `misc` folder is just what I created at the very start but thought could come in handy later. Nothing of interest there for the purpose of this take home coding task although I wrote notes throughout this process into NOTES.md which are messy but helped me track my thoughts and ideas.
