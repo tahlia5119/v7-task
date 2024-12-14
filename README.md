@@ -22,9 +22,9 @@ Decided to use fastapi to expose the python backend to the frontend. I intend to
 
 Given I'm using fastapi and the way the data is sent, I'm going to change from using a grid class to just basic functions. Might be useful for websockets though so I'll keep the file for now. I'll use the new `backend/grid.py` file to refine the functions.
 
-Assuming minimum grid size is 4.
+Assuming minimum grid size is 3.
 
-I'm including logic for the blocks now as that will be easier to implement as I go rather than later. I'm making an assumption that we can't have more than grid_size-2 blocks. Maybe I should change this to a solid 4 blocks? And that blocks cannot occur more than once in a row.
+I'm including logic for the blocks now as that will be easier to implement as I go rather than later. I'm making an assumption that we can't have more than grid_size-2 blocks. ~~Maybe I should change this to a solid 4 blocks?~~ And that blocks cannot occur more than once in a row.
 
 After some thinking, I really only need to define the push_left function and then the others can just use that combined wtih transpose/reverse operations.
 left - left
@@ -32,7 +32,15 @@ right - reverse, left, reverse
 up - transpose, left, transpose
 down - transpose, right, transpose
 
-Future improvements:
+### Frontend
+
+I am not familiar with Vue but will give it a go.
+
+My idea is to have two pages - the `Home` page and the `Game` page. If there is a game over, an overlay is visible on the game page that says `Game Over` and shows a `New Game?` button that refreshes the page with a new grid.
+
+When `Game` page is accessed, there is a pop up (or just an overlay?) with optional settings (size and blocks) prefilled with default values (6 and 0 respectively) and another button `Start Game` that removes overlay and sets up the new grid. I should display instructions to the left of the grid.
+
+## Future improvements:
 - data persistence 
     - allow user login so that they can return to their old game
 
