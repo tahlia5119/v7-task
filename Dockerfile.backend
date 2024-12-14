@@ -1,0 +1,20 @@
+FROM python:3.13-slim
+
+USER root
+
+# Set working directory.
+WORKDIR /srv
+
+# Set PYTHONPATH
+ENV PYTHONPATH="/srv"
+
+RUN pip install pip-tools
+
+COPY ./backend /srv/backend
+
+RUN ls && pip install --no-cache-dir -r backend/requirements.txt
+
+EXPOSE 8000
+
+ENTRYPOINT ["uvicorn"]
+CMD ["backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

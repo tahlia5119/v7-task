@@ -47,7 +47,10 @@ Found a bug while testing the frontend wherein, even if there is still the abili
 And another bug - showing that they won when 2048 isn't present in the grid...
 
 
+
 ## Future improvements:
 - data persistence 
     - allow user login so that they can return to their old game
+- TESTS (I was pushing how long I was working on this) - I'll probably just add them still after I have submitted for the sake of my github's state
+- bonus task - multiplayer through websockets (can easily be done with fastapi)
 

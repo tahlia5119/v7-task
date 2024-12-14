@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  frontend-app:
+    container_name: frontend-app
+    depends_on:
+      backend-app:
+        condition: service_started
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    environment:
+      - VUE_APP_BACKEND_ENDPOINT=http://backend-app:8000/game
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      v7-task:
+
+  backend-app:
+    container_name: backend-app
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /srv/backend
+        consistency: cached
+    restart: always
+    ports:
+      - 8000:8000
+    networks:
+      v7-task:
+
+volumes:
+  data-postgres:
+
+networks:
+  v7-task:
+    driver: bridge
