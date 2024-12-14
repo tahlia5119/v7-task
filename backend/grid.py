@@ -69,6 +69,11 @@ def push_up(grid: np.ndarray) -> np.ndarray:
     up = left.transpose()
     return up
 
+def check_moves_left(grid: np.ndarray):
+    if np.all([grid, push_left(grid), push_right(grid), push_up(grid), push_down(grid)]):
+        return False
+    return True
+
 def add_tile(grid: np.ndarray) -> np.ndarray:
     # check for number of empty tiles and get locations
     empty_tiles = []
@@ -76,13 +81,20 @@ def add_tile(grid: np.ndarray) -> np.ndarray:
         for col_num, col in enumerate(row):
             if col == 0:
                 empty_tiles.append([row_num, col_num])
-    # if there's only 1 space before we add the new tile then it's game over
-    if len(empty_tiles) <= 1:
-        raise GameOver("GAME OVER.")
     
     # get a random index to choose which empty tile gets the new 2
-    new_loc = empty_tiles[random.randint(0, len(empty_tiles)-1)]
-    grid[new_loc[0]][new_loc[1]] = 2
+    if len(empty_tiles) == 1:
+        grid[empty_tiles[0][0]][empty_tiles[0][1]] = 2
+    elif len(empty_tiles) > 1:
+        new_loc = empty_tiles[random.randint(0, len(empty_tiles)-1)]
+        grid[new_loc[0]][new_loc[1]] = 2
+    else:
+        raise GameOver("GAME OVER.")
+
+    # check that there are still possible moves after we add a 2-tile
+    if len(empty_tiles) <= 1:
+        if not check_moves_left(grid):
+            raise GameOver("GAME OVER.")
 
     return grid
 
@@ -103,14 +115,14 @@ def add_blocks(grid: np.ndarray, blocks: int = 0) -> np.ndarray:
 def new_grid(size: int = 6, blocks: int = 0) -> np.ndarray:
     # TODO: set these in a .env?
     if size < 3 or size > 10:
-        raise InvalidGameParameters(f"Invalid grid size {size}. Must be between 3 and 10 (inclusive).")
+        raise InvalidGameParameters(f"Invalid grid size `{size}`. Must be between 3 and 10 (inclusive).")
     # create zeros matrix
     grid = np.zeros((size, size))
     # add blocks if required - maximum size-2 to avoid completely blocking sections of the grid
     if 0 <= blocks <= size-2:
         grid = add_blocks(grid, blocks)
     else:
-        raise InvalidGameParameters(f"Invalid number of blocks {blocks} for grid size of {size}")
+        raise InvalidGameParameters(f"Invalid number of blocks ({blocks}) for selected grid size ({size}).")
  
     # add random 2 tile and return
     return add_tile(grid)

@@ -1,6 +1,6 @@
 <template>
     <div class="cell" :style="{ backgroundColor: getBackgroundColor }">
-        <div class="number">
+        <div class="number" :style="{ color: getTextColor }">
             <span>{{ this.number }}</span>
         </div>
     </div>
@@ -13,6 +13,14 @@
             number: Number
         },
         computed: {
+            getTextColor () {
+                // basic function simply returns a different colour for 0 so that
+                // it blends in with the default background colour and is an empty cell
+                if (this.number == 0) {
+                    return "#ffe6ff";
+                }
+                return "black";
+            },
             getBackgroundColor () {
                 // select colour based on value like the og game
                 // there's probably a better way to  do this I'm sure
@@ -30,7 +38,7 @@
                     "2048": "#cc00cc",
                 };
                 // grade the colours up to 2048, after that it's a constant colour
-                if (this.number > 0 && Object.keys(colourMap).indexOf(String(this.number)) > -1) {
+                if (Object.keys(colourMap).indexOf(String(this.number)) > -1) {
                     return colourMap[String(this.number)];
                 } else if (this.number > 2048) {
                     return "#b300b3";

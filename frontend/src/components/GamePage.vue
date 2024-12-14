@@ -61,14 +61,17 @@ export default {
             alert(data.detail);
           }
           return;
+        // `detail` is populated with a 200 status code if it's game over
+        } else if (data.detail) {
+          alert("GAME OVER.\nClick `Generate New Grid` to start a new game.")
+          return
         }
+  
         this.currentGrid = data.grid;
         this.state = data.state;
 
         if (this.state === "game_won") {
-          console.log("YOU WON! KEEP GOING!");
-        } else if (this.state === "game_over") {
-          alert("GAME OVER.");
+          alert("YOU WIN!");
         }
         
       } catch (error) {

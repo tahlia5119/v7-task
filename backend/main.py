@@ -38,7 +38,7 @@ class Game(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return "go to /game to play"
 
 
 @app.post("/game")
@@ -65,7 +65,7 @@ def play_game(game: Game):
             raise HTTPException(status_code=400, detail="Invalid action type.")
 
         # check if 2048 tile is present
-        if len(np.where(pushed == 2048)) > 0:
+        if np.any(np.where(pushed == 2048)):
             game.state = "game_won"
 
         try:
